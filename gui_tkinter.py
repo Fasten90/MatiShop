@@ -74,28 +74,20 @@ class Application(tk.Frame):
         """ Called at newlines"""
         print(f'entry_changed_input: {event}')
 
-        mode = self.print_mode.get()
-        if mode == 'PrintMode.Print_Automatic':
-            print('Automatic mode')
-            #content = self.entry_qr.get()  # entry
-            content = self.entry_qr.get("0.0", tk.END)
-            print(content)
-            if '\n' not in content:
-                return
-            lines = content.split('\n')
-            lines = [item.strip() for item in lines]
-            for new_line in lines:
-                if len(new_line) == 0:
-                    continue
-                # Item LETS GO
-                print(f'Find new line: {new_line}')
-                # Generate
-                self.generate_qr(new_line)
-                # Print
-                self.print_qr()
-            self.entry_qr.delete("0.0", tk.END)
-        else:
-            print('Manual mode, multiline print is disabled')
+        #content = self.entry_qr.get()  # entry
+        content = self.entry_qr.get("0.0", tk.END)
+        print(f'Content: {content}')
+        if '\n' not in content:
+            return
+        lines = content.split('\n')
+        lines = [item.strip() for item in lines]
+        for new_line in lines:
+            if len(new_line) == 0:
+                continue
+            # Item LETS GO
+            print(f'Find new line: {new_line}')
+            # TODO
+        self.entry_qr.delete("0.0", tk.END)
 
 
 def start_gui(config=None):
