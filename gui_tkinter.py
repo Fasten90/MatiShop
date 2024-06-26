@@ -52,12 +52,10 @@ class Application(tk.Frame):
 
 
     def button_add_event(self):
-        print('Generate button')
+        print('Add button')
         lines = self.entry_qr.get("0.0", tk.END)  # TODO: Check which line needed... or clear needed
-        #original_qr_code = lines.split('\n')[-1:]  # TODO: Bugfix list element
-        original_qr_code = lines
-        print(f'QR: "{original_qr_code}"')
-        self.generate_qr(original_qr_code)
+        print(f'Lines: "{lines}"')
+        self.add_item(lines)
 
 
     def button_exit_event(self):
