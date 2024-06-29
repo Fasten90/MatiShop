@@ -55,7 +55,7 @@ class Application(tk.Frame):
 
 
     def button_add_event(self):
-        print('Add button')
+        self.print_log(f'Try to add...')
         lines = self.entry_barcode_input.get("0.0", tk.END)  # TODO: Check which line needed... or clear needed
         print(f'Lines: "{lines}"')
         #self.add_item(lines)  # TODO: Create a method...
@@ -93,15 +93,15 @@ class Application(tk.Frame):
             if shop_result:
                 shop.get_item_info(new_line)
                 self.print_log(f'Successfully found: {new_line}')
-                # TODO: Disable button_add...
+                self.button_add["state"] = tk.DISABLED
             else:
                 self.print_log(f'{new_line} not found, you shall add it!')
-                # TODO: Enable button_add...
+                self.button_add["state"] = tk.NORMAL
         self.entry_barcode_input.delete("0.0", tk.END)
 
     def print_log(self, message):
         print(f'[INFO] {message}')
-        self.text_log.insert(tk.END, message)
+        self.text_log.insert(tk.END, message + '\n')
 
 
 def do_shop_init():
