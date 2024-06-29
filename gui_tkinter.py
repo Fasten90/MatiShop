@@ -24,7 +24,9 @@ class Application(tk.Frame):
 
         # Title
         title_font = ('Arial', 20, 'bold')
+
         self.title_label = tk.Label(self, text="MatiShop", font=title_font)
+        self.title_label["bg"] = "darkgrey"
         self.title_label.grid(row=0, column=0)  # View
 
         large_font = ('Verdana',20)
@@ -32,19 +34,23 @@ class Application(tk.Frame):
         self.entry_barcode_input = tk.Text(self, width=40, height=10, font=large_font)
         self.entry_barcode_input.grid(row=1, column=0, rowspan=2)  # View
         #self.entry_barcode_input["textvariable"] = self.contents
+        self.entry_barcode_input["bg"] = "darkgrey"
         self.entry_barcode_input.bind('<Key-Return>', self.entry_changed_input)
 
-        self.button_2 = tk.Button(self, width=20, height=5)
-        self.button_2["text"] = "Add"
-        self.button_2["command"] = self.button_add_event
-        self.button_2.grid(row=1, column=3)  # View
+        self.button_add = tk.Button(self, width=20, height=5)
+        self.button_add["text"] = "Add"
+        self.button_add["command"] = self.button_add_event
+        self.button_add["bg"] = "darkgrey"
+        self.button_add.grid(row=1, column=3)  # View
 
-        self.button_3 = tk.Button(self, width=20, height=5)
-        self.button_3["text"] = "Exit"
-        self.button_3["command"] = self.button_exit_event
-        self.button_3.grid(row=1, column=4)  # View
+        self.button_exit = tk.Button(self, width=20, height=5)
+        self.button_exit["text"] = "Exit"
+        self.button_exit["command"] = self.button_exit_event
+        self.button_exit["bg"] = "darkgrey"
+        self.button_exit.grid(row=1, column=4)  # View
 
         self.text_log = tk.Text(self, width=40, height=10, font=large_font)
+        self.text_log["bg"] = "darkgrey"
         self.text_log.grid(row=2, column=0, rowspan=2)  # View
 
 
@@ -87,10 +93,10 @@ class Application(tk.Frame):
             if shop_result:
                 shop.get_item_info(new_line)
                 self.print_log(f'Successfully found: {new_line}')
-                # TODO: Disable button_2...
+                # TODO: Disable button_add...
             else:
                 self.print_log(f'{new_line} not found, you shall add it!')
-                # TODO: Enable button_2...
+                # TODO: Enable button_add...
         self.entry_barcode_input.delete("0.0", tk.END)
 
     def print_log(self, message):
@@ -114,6 +120,8 @@ def start_gui(config=None):
     # Not tkinter related
     do_shop_init()
     # end of tkinter related
+    root.configure(bg="darkgrey")
+    app.configure(bg="darkgrey")  # Colorize all sub widgets
     app.mainloop()
 
 
