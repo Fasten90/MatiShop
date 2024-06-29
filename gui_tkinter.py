@@ -22,23 +22,17 @@ class Application(tk.Frame):
 
     def create_widgets(self):
 
-        # Specials
-        #global gui_variable_status
-        #gui_variable_status = tk.StringVar(value='Status')
-
         # Title
         title_font = ('Arial', 20, 'bold')
-        self.title_label = tk.Label(self, text="MatiShops", font=title_font)
+        self.title_label = tk.Label(self, text="MatiShop", font=title_font)
         self.title_label.grid(row=0, column=0)  # View
 
-        # What is this...
         large_font = ('Verdana',20)
-        entry_var = tk.StringVar(value='EXAMPE_QR_CODE')
-        #self.entry_qr = tk.Entry(self, width=40, textvariable=entry_var, font=large_font)
-        self.entry_qr = tk.Text(self, width=40, height=10, font=large_font)
-        self.entry_qr.grid(row=1, column=0, rowspan=2)  # View
-        #self.entry_qr["textvariable"] = self.contents
-        self.entry_qr.bind('<Key-Return>', self.entry_changed_input)
+
+        self.entry_barcode_input = tk.Text(self, width=40, height=10, font=large_font)
+        self.entry_barcode_input.grid(row=1, column=0, rowspan=2)  # View
+        #self.entry_barcode_input["textvariable"] = self.contents
+        self.entry_barcode_input.bind('<Key-Return>', self.entry_changed_input)
 
         self.button_2 = tk.Button(self, width=20, height=5)
         self.button_2["text"] = "Add"
@@ -50,12 +44,15 @@ class Application(tk.Frame):
         self.button_3["command"] = self.button_exit_event
         self.button_3.grid(row=1, column=4)  # View
 
+        self.text_log = tk.Text(self, width=40, height=10, font=large_font)
+        self.text_log.grid(row=2, column=0, rowspan=2)  # View
+
 
     def button_add_event(self):
         print('Add button')
-        lines = self.entry_qr.get("0.0", tk.END)  # TODO: Check which line needed... or clear needed
+        lines = self.entry_barcode_input.get("0.0", tk.END)  # TODO: Check which line needed... or clear needed
         print(f'Lines: "{lines}"')
-        self.add_item(lines)
+        #self.add_item(lines)  # TODO: Create a method...
 
 
     def button_exit_event(self):
@@ -72,8 +69,8 @@ class Application(tk.Frame):
         """ Called at newlines"""
         print(f'entry_changed_input: {event}')
 
-        #content = self.entry_qr.get()  # entry
-        content = self.entry_qr.get("0.0", tk.END)
+        #content = self.entry_barcode_input.get()  # entry
+        content = self.entry_barcode_input.get("0.0", tk.END)
         print(f'Content: {content}')
         if '\n' not in content:
             return
@@ -84,16 +81,39 @@ class Application(tk.Frame):
                 continue
             # Item LETS GO
             print(f'Find new line: {new_line}')
-            # TODO
-        self.entry_qr.delete("0.0", tk.END)
+            # Process the line
+            import shop
+            shop_result = shop.check_if_item_is_available(new_line)
+            if shop_result:
+                shop.get_item_info(new_line)
+                self.print_log(f'Successfully found: {new_line}')
+                # TODO: Disable button_2...
+            else:
+                self.print_log(f'{new_line} not found, you shall add it!')
+                # TODO: Enable button_2...
+        self.entry_barcode_input.delete("0.0", tk.END)
+
+    def print_log(self, message):
+        print(f'[INFO] {message}')
+        self.text_log.insert(tk.END, message)
+
+
+def do_shop_init():
+    try:
+        import shop
+        shop.load_offline_config()
+    except:
+        print('[ERROR] with loading shop data!')
 
 
 def start_gui(config=None):
     global root
-
     root = tk.Tk()
     root.attributes('-fullscreen', True)
     app = Application(master=root)
+    # Not tkinter related
+    do_shop_init()
+    # end of tkinter related
     app.mainloop()
 
 

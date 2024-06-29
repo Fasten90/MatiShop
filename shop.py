@@ -25,7 +25,8 @@ def get_item_info(code):
     for item in config:
         if item['barcode'] == code:
             return item
-    
+    return None
+
 
 def add_item(code, itemname, value):
     print(f'Add code: {code}')
