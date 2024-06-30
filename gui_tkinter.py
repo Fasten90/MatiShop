@@ -48,27 +48,54 @@ class Application(tk.Frame):
         self.button_exit["command"] = self.button_exit_event
         self.button_exit["bg"] = "darkgrey"
         self.button_exit.grid(row=1, column=4)  # View
+    
+        self.button_clear = tk.Button(self, width=20, height=5)
+        self.button_clear["text"] = "Clear"
+        self.button_clear["command"] = self.button_clear_event
+        self.button_clear["bg"] = "darkgrey"
+        self.button_clear.grid(row=2, column=3)  # View
 
         self.text_log = tk.Text(self, width=40, height=10, font=large_font)
         self.text_log["bg"] = "darkgrey"
         self.text_log.grid(row=2, column=0, rowspan=2)  # View
+
+        self.all_cost_label = tk.Label(self, text="All cost:", font=title_font)
+        self.all_cost_label["bg"] = "darkgrey"
+        self.all_cost_label.grid(row=4, column=0)  # View
+
+        self.all_cost_calculation_label = tk.Label(self, text="0 Ft", font=title_font)
+        self.all_cost_calculation_label["bg"] = "darkgrey"
+        self.all_cost_calculation_label.grid(row=4, column=1)  # View
 
 
     def button_add_event(self):
         self.print_log(f'Try to add...')
         lines = self.entry_barcode_input.get("0.0", tk.END)  # TODO: Check which line needed... or clear needed
         print(f'Lines: "{lines}"')
-        #self.add_item(lines)  # TODO: Create a method...
+        import shop
+        # TODO: Expected arguments: code and itemname and value
+        shop.add_item(lines)
 
 
     def button_exit_event(self):
         print('Exit button')
         self.quit()
 
+    def button_clear_event(self):
+        print('Clear button')
+        import shop
+        shop.clear_cost()
+        self.all_cost_calculation_label["text"] = "0 Ft"
+        self.text_log.delete("1.0", tk.END)
 
     def quit(self):
         self.master.destroy()
         exit(0)
+
+    def update_all_cost(self):
+        import shop
+        all_cost_value = shop.get_all_cost()
+        self.all_cost_calculation_label["text"] = all_cost_value
 
 
     def entry_changed_input(self, event):
@@ -91,9 +118,13 @@ class Application(tk.Frame):
             import shop
             shop_result = shop.check_if_item_is_available(new_line)
             if shop_result:
-                shop.get_item_info(new_line)
                 self.print_log(f'Successfully found: {new_line}')
                 self.button_add["state"] = tk.DISABLED
+                item_info = shop.get_item_info(new_line)
+                shop.add_item_to_cost(item_info)
+                self.print_log(f'{item_info["item"]}')
+                self.print_log(f'{item_info["cost"]}')
+                self.update_all_cost()
             else:
                 self.print_log(f'{new_line} not found, you shall add it!')
                 self.button_add["state"] = tk.NORMAL

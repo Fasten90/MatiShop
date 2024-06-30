@@ -4,6 +4,10 @@ import csv
 config = []
 
 
+all_cost = 0
+cost_text = ''''''
+
+
 def load_offline_config():
     global config
     config.clear()
@@ -56,4 +60,22 @@ if __name__ == '__main__':
         print(get_item_info(code))
     else:
         add_item(code, "Test", 12)
+
+
+def clear_cost():
+    global all_cost
+    global cost_text
+    all_cost = 0
+    cost_text = ''''''
+
+
+def add_item_to_cost(item):
+    global all_cost
+    global cost_text
+    all_cost += int(item['cost'])
+    cost_text += f'{item["item"]} - {item["cost"]}'
+
+
+def get_all_cost():
+    return f'{all_cost} Ft'
 
