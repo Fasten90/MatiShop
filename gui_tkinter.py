@@ -37,23 +37,31 @@ class Application(tk.Frame):
         self.entry_barcode_input["bg"] = "darkgrey"
         self.entry_barcode_input.bind('<Key-Return>', self.entry_changed_input)
 
-        self.button_add = tk.Button(self, width=20, height=5)
-        self.button_add["text"] = "Add"
-        self.button_add["command"] = self.button_add_event
-        self.button_add["bg"] = "darkgrey"
-        self.button_add.grid(row=1, column=3)  # View
+        self.button_clear = tk.Button(self, width=20, height=5)
+        self.button_clear["text"] = "Clear"
+        self.button_clear["command"] = self.button_clear_event
+        self.button_clear["bg"] = "darkgrey"
+        self.button_clear.grid(row=1, column=3)  # View
 
         self.button_exit = tk.Button(self, width=20, height=5)
         self.button_exit["text"] = "Exit"
         self.button_exit["command"] = self.button_exit_event
         self.button_exit["bg"] = "darkgrey"
         self.button_exit.grid(row=1, column=4)  # View
-    
-        self.button_clear = tk.Button(self, width=20, height=5)
-        self.button_clear["text"] = "Clear"
-        self.button_clear["command"] = self.button_clear_event
-        self.button_clear["bg"] = "darkgrey"
-        self.button_clear.grid(row=2, column=3)  # View
+
+        self.button_add = tk.Button(self, width=20, height=5)
+        self.button_add["text"] = "Add"
+        self.button_add["command"] = self.button_add_event
+        self.button_add["bg"] = "darkgrey"
+        self.button_add.grid(row=2, column=3)  # View
+
+        self.text_itemname = tk.Text(self, width=10, height=1, font=large_font)
+        self.text_itemname.grid(row=3, column=3)  # View
+        self.text_itemname["bg"] = "darkgrey"
+
+        self.text_itemcost = tk.Text(self, width=10, height=1, font=large_font)
+        self.text_itemcost.grid(row=3, column=4)  # View
+        self.text_itemcost["bg"] = "darkgrey"
 
         self.text_log = tk.Text(self, width=40, height=10, font=large_font)
         self.text_log["bg"] = "darkgrey"
@@ -73,8 +81,10 @@ class Application(tk.Frame):
         lines = self.entry_barcode_input.get("0.0", tk.END)  # TODO: Check which line needed... or clear needed
         print(f'Lines: "{lines}"')
         import shop
-        # TODO: Expected arguments: code and itemname and value
-        shop.add_item(lines)
+        barcode = lines.strip()
+        item_name = self.text_itemname.get("0.0", tk.END).strip()
+        item_cost = self.text_itemcost.get("0.0", tk.END).strip()
+        shop.add_item(barcode, item_name, item_cost)
 
 
     def button_exit_event(self):
@@ -125,9 +135,17 @@ class Application(tk.Frame):
                 self.print_log(f'{item_info["item"]}')
                 self.print_log(f'{item_info["cost"]}')
                 self.update_all_cost()
+                self.text_itemname.delete("1.0", tk.END)
+                self.text_itemname.insert(tk.END, item_info["item"])
+                self.text_itemcost.delete("1.0", tk.END)
+                self.text_itemcost.insert(tk.END, item_info["cost"])
+                self.text_itemname.configure(tk.DISABLED)
+                self.text_itemcost.configure(tk.DISABLED)
             else:
                 self.print_log(f'{new_line} not found, you shall add it!')
                 self.button_add["state"] = tk.NORMAL
+                self.text_itemname.configure(tk.NORMAL)
+                self.text_itemcost.configure(tk.NORMAL)
         self.entry_barcode_input.delete("0.0", tk.END)
 
     def print_log(self, message):
