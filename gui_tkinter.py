@@ -112,7 +112,6 @@ class Application(tk.Frame):
         """ Called at newlines"""
         print(f'entry_changed_input: {event}')
 
-        #content = self.entry_barcode_input.get()  # entry
         content = self.entry_barcode_input.get("0.0", tk.END)
         print(f'Content: {content}')
         if '\n' not in content:
@@ -139,8 +138,8 @@ class Application(tk.Frame):
                 self.text_itemname.insert(tk.END, item_info["item"])
                 self.text_itemcost.delete("1.0", tk.END)
                 self.text_itemcost.insert(tk.END, item_info["cost"])
-                self.text_itemname.configure(tk.DISABLED)
-                self.text_itemcost.configure(tk.DISABLED)
+                #self.text_itemname.configure(tk.DISABLED)
+                #self.text_itemcost.configure(tk.DISABLED)
             else:
                 self.print_log(f'{new_line} not found, you shall add it!')
                 self.button_add["state"] = tk.NORMAL
